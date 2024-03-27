@@ -7,6 +7,7 @@ import android.os.Looper
 import android.widget.Button
 import android.widget.ImageView
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Delay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -18,10 +19,6 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var cakeImageView: ImageView
 
-    val handler = Handler(Looper.getMainLooper(), Handler.Callback {
-        cakeImageView.alpha = it.what / 100f
-        true
-    })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,15 +26,19 @@ class MainActivity : AppCompatActivity() {
 
         cakeImageView = findViewById(R.id.imageView)
 
-        val scope = CoroutineScope(Job() + Dispatchers.Default)
+
+        val scope = CoroutineScope(Job() + Dispatchers.Main)
 
         findViewById<Button>(R.id.revealButton).setOnClickListener{
             scope.launch {
+
                 repeat(100) {
-                    handler.sendEmptyMessage(it)
+                    cakeImageView.alpha = it / 100f
                     delay(40)
                 }
-            }.start()
+            }
         }
+
+
     }
 }
